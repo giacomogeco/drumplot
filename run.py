@@ -31,8 +31,6 @@ for entry in listOfFiles:
 nfile_config = len(file_config)
 modname = 'stationparameters'
 
-colors = ['blue','blue','blue','blue']
-
 # Render Loop
 tstart = datetime.datetime.utcnow()
 tstart = tstart.replace(second=0)
