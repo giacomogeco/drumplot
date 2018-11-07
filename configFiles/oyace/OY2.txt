@@ -1,0 +1,18 @@
+ip = 'https://control.wyssenavalanche.com/app/api/ida/raw.php?'
+key = 'zC8AqKrpAw-8tHawJGiDT-R80ab1PRic'
+limit = '100000000'
+struct = 'true'
+json = 'false'
+id = '8073'
+network = 'oyace'
+stationame = 'OY2'
+location = '00'
+channel = ['PS2']
+imgdir = 'drumImgs/'
+smp = 50
+filter = 1
+filterOrder = 3
+fqMin = 0.5
+fqMax = 10
+statusPostUrl = "https://jarvis.gtsu.org/geco/api/v1/status/"
+
