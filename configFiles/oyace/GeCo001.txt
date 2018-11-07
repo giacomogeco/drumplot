@@ -4,7 +4,6 @@ limit = '100000000'
 struct = 'true'
 json = 'false'
 id = '8073'
-port = 16088
 network = 'oyace'
 stationame = 'OY1'
 location = '00'
