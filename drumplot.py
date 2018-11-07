@@ -28,27 +28,9 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order):
 
 def drumplotSaveLog(pTimeLogFile):
     pTimeLogFile = 'log/' + pTimeLogFile
-    if os.path.exists(pTimeLogFile):
-        file = open(pTimeLogFile, 'r')
-        pT1 = file.read()
-        pT1 = datetime.strptime(pT1, '%Y-%m-%d %H:%M:%S')
-    else:
-        pT1 = dt.datetime.utcnow()
-        pT1 = pT1.replace(second=0)
-        pT1 = pT1.replace(microsecond=0)
-        file = open(pTimeLogFile, 'w')
-        file.write(str(pT1))
-        file.close()
-
-pTimeLogFile = 'log/pTimeLogFile.txt'
-if os.path.exists(pTimeLogFile):
-    file = open(pTimeLogFile, 'r')
-    pT1 = file.read()
-    pT1 = datetime.strptime(pT1, '%Y-%m-%d %H:%M:%S')
-else:
-    pT1 = dt.datetime.utcnow()
-    pT1 = pT1.replace(second=0)
-    pT1 = pT1.replace(microsecond=0)
+    pT1 = datetime.datetime.utcnow()
+    pT1.replace(second=0)
+    pT1.replace(microsecond=0)
     file = open(pTimeLogFile, 'w')
     file.write(str(pT1))
     file.close()
@@ -56,7 +38,7 @@ else:
 # Reads data and draws a drumplot
 # The image is saved as a png with tmin in the filename
 def renderDrumplot(key, station, path, tmin, tmax, sensor):
-
+    colors = ['blue', 'blue', 'blue', 'blue']
     # Prepare the request
     domain = 'http://control.wyssenavalanche.com'
     location = 'app/api/ida/raw.php'
