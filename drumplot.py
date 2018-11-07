@@ -173,7 +173,7 @@ while 1:
             # RENDERING
             if dt.seconds >= 60 :
                 voltage, temperature, gps, ndata, status = renderDrumplot(key, station, path, tmin.strftime('%Y-%m-%d%%20%H:%M:00'), tmax.strftime('%Y-%m-%d%%20%H:%M:%S'),sensor)
-            else :
+            else:
                 print('>>> drumplot scrolling line <<<')
                 tdelta = datetime.timedelta(minutes=15)
                 tmin = tmax - tdelta
