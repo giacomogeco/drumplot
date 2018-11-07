@@ -1,4 +1,3 @@
-import sys
 import os
 import json
 import numpy as np
@@ -6,39 +5,12 @@ from scipy.signal import butter, lfilter
 
 import urllib.request
 import requests
-import math
 import datetime
-import time
-import calendar
 import imp
 
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import fnmatch
-
-#------------------------ LOAD INPUTS from configfile
-#print '... loading input parameters'
-network = 'oyace'
-path_config = os.curdir+'/configFiles/'+network+'/'
-#file_config = glob.glob(path_config+'*.txt')
-listOfFiles = os.listdir(path_config)
-pattern = "*.txt"
-i=0
-file_config=[]
-for entry in listOfFiles:
-    print(entry)
-    if fnmatch.fnmatch(entry, pattern):
-        if entry.find('_') < 0:
-            file_config.insert(i, entry)
-            i+=1
-
-
-
-nfile_config = len(file_config)
-modname = 'stationparameters'
-
-colors = ['blue','blue','blue','blue']
 
 #------------------------ FILTER
 def butter_bandpass(lowcut, highcut, fs, order):
@@ -54,10 +26,36 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order):
     return y
 
 
+def drumplotSaveLog(pTimeLogFile):
+    pTimeLogFile = 'log/' + pTimeLogFile
+    if os.path.exists(pTimeLogFile):
+        file = open(pTimeLogFile, 'r')
+        pT1 = file.read()
+        pT1 = datetime.strptime(pT1, '%Y-%m-%d %H:%M:%S')
+    else:
+        pT1 = dt.datetime.utcnow()
+        pT1 = pT1.replace(second=0)
+        pT1 = pT1.replace(microsecond=0)
+        file = open(pTimeLogFile, 'w')
+        file.write(str(pT1))
+        file.close()
+
+pTimeLogFile = 'log/pTimeLogFile.txt'
+if os.path.exists(pTimeLogFile):
+    file = open(pTimeLogFile, 'r')
+    pT1 = file.read()
+    pT1 = datetime.strptime(pT1, '%Y-%m-%d %H:%M:%S')
+else:
+    pT1 = dt.datetime.utcnow()
+    pT1 = pT1.replace(second=0)
+    pT1 = pT1.replace(microsecond=0)
+    file = open(pTimeLogFile, 'w')
+    file.write(str(pT1))
+    file.close()
+
 # Reads data and draws a drumplot
 # The image is saved as a png with tmin in the filename
 def renderDrumplot(key, station, path, tmin, tmax, sensor):
-    print('... Loading data')
 
     # Prepare the request
     domain = 'http://control.wyssenavalanche.com'
@@ -66,6 +64,7 @@ def renderDrumplot(key, station, path, tmin, tmax, sensor):
     req = "{d}/{p}?{args}".format(d=domain, p=location, args=args)
 
     # Load the data
+    print('>>> Loading data ...')
     with urllib.request.urlopen(req) as url:
         data = json.loads(url.read().decode())
 
@@ -147,46 +146,3 @@ def drumplotPostStatus(sensor, upTime, voltage, temperature, gps):
     return response.text
 
 
-# Render now
-tstart = datetime.datetime.utcnow()
-tstart = tstart.replace(second=0)
-tstart = tstart.replace(microsecond =0)
-print(tstart)
-while 1:
-    # Get the timestamps
-    tmax = datetime.datetime.utcnow()
-    if tmax > tstart :
-        print('>>> starting drumplot <<<')
-        tmin  = calendar.timegm(tstart.utctimetuple())
-        tmin = math.floor(tmin/900)*900
-        tmin = datetime.datetime.utcfromtimestamp(tmin)
-        print('>>> from ' + str(tmin) + ' to ' + str(tmax), ' <<<')
-        dt = tmax-tmin
-
-        for i in file_config:
-            file = path_config + i
-            sensor = imp.load_source(modname, file)
-            key = sensor.key  # sys.argv[1]
-            station = sensor.id  # sys.argv[2]
-            path = sensor.imgdir  # sys.argv[3]
-
-            # RENDERING
-            if dt.seconds >= 60 :
-                voltage, temperature, gps, ndata, status = renderDrumplot(key, station, path, tmin.strftime('%Y-%m-%d%%20%H:%M:00'), tmax.strftime('%Y-%m-%d%%20%H:%M:%S'),sensor)
-            else:
-                print('>>> drumplot scrolling line <<<')
-                tdelta = datetime.timedelta(minutes=15)
-                tmin = tmax - tdelta
-                voltage, temperature, gps, ndata, status = renderDrumplot(key, station, path, tmin.strftime('%Y-%m-%d%%20%H:%M:00'), tmax.strftime('%Y-%m-%d%%20%H:%M:%S'),sensor)
-
-            dataP = 100 * (ndata / (dt.seconds * sensor.smp))
-            print('>>> ' + str(round(dataP,1)) + '% of data <<<')
-            # POSTING STATUS
-            #TODO ask beni for voltage ad gps status
-            upTime = tmax.strftime('%Y-%m-%dT%H:%M:%S.FFFZ')
-
-            r = drumplotPostStatus(sensor, upTime, voltage, temperature, gps)
-
-            tstart = tstart + datetime.timedelta(minutes = +1)
-
-    time.sleep(5)
