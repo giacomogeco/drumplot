@@ -4,26 +4,12 @@ limit = '100000000'
 struct = 'true'
 json = 'false'
 id = '8077'
-port = 16088
-network = 'ITA'
+network = 'oyace'
 stationame = 'OY2'
 location = '00'
-channel = ['P']
-imgdir = 'drumimgs/'
-ti_str = "20161025_11:00:00"
-tf_str = "20161025_17:00:00"
-fs = 50
+channel = ['PS2']
+imgdir = 'drumImgs/'
+smp = 50
 filter = 1
-
-fqmin = 0.5
-
-fqmax = 10
-
-plot_waveform = 0
-
-plot_spectrogram = 0
-
-plot_drumplot = 1
-
-save = 0
-save_fmt = []
+fqMin = 0.5
+fqMax = 10
