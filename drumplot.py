@@ -9,7 +9,7 @@ import datetime
 import imp
 
 import matplotlib
-matplotlib.use('Agg')
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
 #------------------------ FILTER
@@ -46,12 +46,11 @@ def renderDrumplot(key, station, path, tmin, tmax, sensor):
     req = "{d}/{p}?{args}".format(d=domain, p=location, args=args)
 
     # Load the data
-    print('>>> Loading data ...')
+    print('>>> Loading data <<<')
     with urllib.request.urlopen(req) as url:
         data = json.loads(url.read().decode())
 
     x = np.array(data["values"])
-
     if x.size == 0:
         x=0
         y=0
@@ -64,7 +63,6 @@ def renderDrumplot(key, station, path, tmin, tmax, sensor):
     else:
         y = x[:, 1]
         ndata = len(y)
-        # Filtering
         y = y - np.mean(y)
         # ------------------------ FILTER
         if sensor.filter:
@@ -83,7 +81,7 @@ def renderDrumplot(key, station, path, tmin, tmax, sensor):
     fig = plt.figure(figsize=(600 / my_dpi, 100 / my_dpi), frameon=False)
     ax = fig.add_axes([0, 0, 1, 1])
     ax.axis('off')
-    plt.ylim(-5, 5)
+
     plt.xlim(0, 45000)
 
     i15 = [("00", 0), ("15", 1), ("30", 2), ("45", 3)]
@@ -91,11 +89,12 @@ def renderDrumplot(key, station, path, tmin, tmax, sensor):
     t15=tmin[16:18]
     clr = colors[i15[t15]]
     ax.plot(y, clr, linewidth=1.0)
+    # 1 pixel = 1 Pa / 100
+    plt.ylim(-0.5, 0.5)
 
     # Render and save the graph
-    print('... Saveing image')
+    print('>>> Saveing image <<<')
     name = (sensor.stationame+'-'+sensor.id+'-drumplot-{}').format(tmin.replace('%20', ' ').replace(':', ''))
-    print(name)
     if not os.path.exists(path):
         os.makedirs(path)
     fig.savefig('{path}/{name}.png'.format(path=path, name=name), transparent=True, dpi=my_dpi)

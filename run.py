@@ -1,15 +1,13 @@
 from drumplot import *
-import sys
 import os
 
 import math
 import datetime
+from datetime import timedelta
 import time
 import calendar
 import imp
 
-import matplotlib
-matplotlib.use('TkAgg')
 import fnmatch
 
 #------------------------ LOAD INPUTS from configfile
@@ -39,11 +37,10 @@ while 1:
     # Get the timestamps
     tmax = datetime.datetime.utcnow()
     if tmax > tstart :
-        print('>>> starting drumplot <<<')
+        print('>>> refreshing drumplot ' + str(tmax) + ' <<<')
         tmin  = calendar.timegm(tstart.utctimetuple())
         tmin = math.floor(tmin/900)*900
         tmin = datetime.datetime.utcfromtimestamp(tmin)
-        print('>>> from ' + str(tmin) + ' to ' + str(tmax), ' <<<')
         dt = tmax-tmin
 
         for i in file_config:
@@ -52,6 +49,7 @@ while 1:
             key = sensor.key  # sys.argv[1]
             station = sensor.id  # sys.argv[2]
             path = sensor.imgdir  # sys.argv[3]
+            print('>>> ID: ' + str(station) + ' <<<')
 
             # RENDERING
             if dt.seconds >= 60 :
@@ -68,7 +66,7 @@ while 1:
             #TODO ask beni for voltage ad gps status
             upTime = tmax.strftime('%Y-%m-%dT%H:%M:%S.FFFZ')
 
-            r = drumplotPostStatus(sensor, upTime, voltage, temperature, gps)
+            #r = drumplotPostStatus(sensor, upTime, voltage, temperature, gps)
 
             tstart = tstart + datetime.timedelta(minutes = +1)
 
