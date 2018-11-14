@@ -62,10 +62,10 @@ while 1:
 
             dataP = 100 * (ndata / (dt.seconds * sensor.smp))
             print('>>> ' + str(round(dataP,1)) + '% of data <<<')
+
             # POSTING STATUS
             #TODO ask beni for voltage ad gps status
             upTime = tmax.strftime('%Y-%m-%dT%H:%M:%S.FFFZ')
-
             #r = drumplotPostStatus(sensor, upTime, voltage, temperature, gps)
 
             tstart = tstart + datetime.timedelta(minutes = +1)

@@ -12,7 +12,7 @@ imgdir = 'drumImgs/'
 smp = 50
 filter = 1
 filterOrder = 3
-fqMin = 0.5
+fqMin = 1
 fqMax = 10
 statusPostUrl = "https://jarvis.gtsu.org/geco/api/v1/status/"
 
